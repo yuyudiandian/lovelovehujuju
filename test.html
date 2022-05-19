@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./file/photo.css">
+</head>
+<body>
+    <p></p>
+<div>
+  <ul>
+    <li>
+      <a href="#">
+        <span>Mount Everest</span>
+        <img src="https://images.unsplash.com/photo-1433477155337-9aea4e790195?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span>K2</span>
+        <img src="https://images.unsplash.com/photo-1502581827181-9cf3c3ee0106?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span>Kangchenjunga</span>
+        <img src="https://images.unsplash.com/photo-1503614472-8c93d56e92ce?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span>Lhotse</span>
+        <img src="https://images.unsplash.com/photo-1438786657495-640937046d18?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span>Makalu</span>
+        <img src="https://images.unsplash.com/photo-1444930694458-01babf71870c?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span>Cho Oyu</span>
+        <img src="https://images.unsplash.com/photo-1516687401797-25297ff1462c?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span>Dhaulagiri I</span>
+        <img src="https://images.unsplash.com/photo-1549558549-415fe4c37b60?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span>Manaslu</span>
+        <img src="https://images.unsplash.com/photo-1600240644455-3edc55c375fe?crop=center&cs=tinysrgb&fit=crop&fm=jpg&ixid=MnwzMjM4NDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTI3MTkyNjc&ixlib=rb-1.2.1&q=60&w=800&h=500" />
+      </a>
+    </li>
+    
+  </ul>
+</div>
+
+<script type="module">
+    import gsap from "https://cdn.skypack.dev/gsap@3.10.4";
+    import ScrollTrigger from "https://cdn.skypack.dev/gsap@3.10.4/dist/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
+
+/* --
+  Known issue: On mobile the first & last cards will never have their titles visible because they will not reach the trigger position 
+  It would be a good solution to show the title of those card when reach the top or the bottom of the page.
+  -- */
+
+/* Check with a media query if the device can handle hover states */
+let isTouchDevice = window.matchMedia('(hover: none)').matches;
+
+/* Add mouse listeners on every card */
+const elLinks = document.querySelectorAll('a');
+const elItems = document.querySelectorAll('li');
+if (!isTouchDevice) {
+  // Add mouse event listener only if it is not a touch device
+  elLinks.forEach(elLink => {
+    elLink.addEventListener('mouseleave', () => onLinkLeave(elLink));
+    elLink.addEventListener('mouseenter', () => onLinkEnter(elLink));
+  });
+}
+
+/* Create the fade-in animation of the cards */
+elItems.forEach(elItem => {
+  /* Create a fade-in of the card title for touch devices */
+  if (isTouchDevice) {
+    titleFadeIn(elItem);
+  }
+  
+  // Skip the transition if the element is already in the viewport
+  const bbox = elItem.getBoundingClientRect();
+  if (bbox.bottom > 0 && bbox.top < window.innerHeight) {
+    // Fade in the card when the image is loaded
+    const elImage = elItem.querySelector('img');
+    // If the image is already loaded (from the cache), fade-in instantly
+    if (elImage.complete) {
+      gsap.to(elItem, {
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power1.out',
+        delay: Math.random() * 0.5 + 0.1
+      });
+    } else {
+      // Else, wait for the image to load before fade-ing in
+      elImage.addEventListener('load', () => {
+        gsap.to(elItem, {
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power1.out',
+          delay: Math.random() * 0.5 + 0.1
+        });
+      });
+    }
+    return;
+  }
+  
+  // Animate the slide-in of the card in the viewport
+  gsap.from(elItem, {
+    y: innerWidth > 960 ? 150 : 50,
+    duration: 0.6,
+    ease: "power2.out",
+    scrollTrigger: {
+      once: true,
+      trigger: elItem,
+      start: "top bottom",
+      end: "top bottom",
+      toggleActions: "play none play play"
+    }
+  });
+  // Animate the fade-in of the card in the viewport
+  gsap.fromTo(elItem, {
+    opacity: 0
+  }, {
+    opacity: 1,
+    duration: 0.6,
+    ease: "power2.out",
+    scrollTrigger: {
+      once: true,
+      trigger: elItem,
+      start: "top bottom",
+      end: "top bottom",
+      toggleActions: "play none play play"
+    }
+  });
+});
+
+function titleFadeIn (elItem) {
+  /* Motion for touch devices */
+  // The title will fade in when the card enters the viewport
+  const elTitle = elItem.querySelector('span');
+  gsap.set(elTitle, {
+    y: 0
+  });
+  gsap.fromTo(elTitle, {
+    opacity: 0
+  }, {
+    opacity: 1,
+    duration: 0.4,
+    ease: "power2.inOut",
+    scrollTrigger: {
+      trigger: elItem,
+      start: "center 75%",
+      end: "center 40%",
+      toggleActions: "play reverse restart reverse"
+    }
+  });
+}
+
+/* When the mouse is entering */
+function onLinkEnter (elHoveredLink) {
+  /* Remove the blur & all translations on the hover card */
+  gsap.to(elHoveredLink, {
+    filter: 'blur(0px)',
+    x: 0,
+    y: 0,
+    scale: 1.2,
+    overwrite: true,
+    duration: 0.6,
+    ease: 'power3.out'
+  });
+  
+  /* Move the elements away from the hovered card */
+  elLinks.forEach(elLink => {
+    // Do nothing with the hovered link
+    if (elLink === elHoveredLink) return;
+    // Calculate the x & y translations
+    let x = (elLink.bbox.x - elHoveredLink.bbox.x) * 0.2;
+    let y = (elLink.bbox.y - elHoveredLink.bbox.y) * 0.2;
+    gsap.to(elLink, {
+      filter: 'blur(15px)',
+      scale: 0.8,
+      x,
+      y,
+      overwrite: true,
+      duration: 0.6,
+      ease: 'power2.out'
+    });
+  });
+}
+
+/* When the mouse is leaving a card */
+function onLinkLeave (elLink) {
+  // Reset all transforms & blur on all the cards
+  gsap.to(elLinks, {
+    filter: 'blur(0px)',
+    x: 0,
+    y: 0,
+    scale: 1,
+    delay: 0.1,
+    overwrite: true
+  });
+}
+
+/* Calculate the bounding rects of each card */
+/* We do it only on resize to avoid calculating it on every hover */
+function calculateBboxes () {
+  elLinks.forEach(elLink => {
+    elLink.bbox = elLink.getBoundingClientRect();
+  });
+}
+/* Re-calculate the bounding client rects after every resize */
+window.addEventListener('resize', calculateBboxes);
+const resizeObserver = new ResizeObserver(() => {
+  calculateBboxes();
+});
+elLinks.forEach(elLink => {
+  resizeObserver.observe(elLink);
+});
+calculateBboxes();
+
+</script>
+</body>
+</html>
